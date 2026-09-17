@@ -1,0 +1,35 @@
+name: Copy site assets
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - ".github/workflows/copy-assets.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  copy-assets:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download site assets
+        run: |
+          mkdir -p assets
+          base="https://ulang-tahun-calon-istri.jack541249ih.chatgpt.site/assets"
+          curl --fail --location --retry 3 --output assets/background-photo.jpeg "$base/background-photo.jpeg"
+          curl --fail --location --retry 3 --output assets/cake-candles-transparent.gif "$base/cake-candles-transparent.gif"
+          curl --fail --location --retry 3 --output assets/ciumin.gif "$base/ciumin.gif"
+          curl --fail --location --retry 3 --output assets/memory-1.jpeg "$base/memory-1.jpeg"
+          curl --fail --location --retry 3 --output assets/memory-2.jpeg "$base/memory-2.jpeg"
+          curl --fail --location --retry 3 --output assets/memory-3.jpeg "$base/memory-3.jpeg"
+          curl --fail --location --retry 3 --output assets/romantic-happy-birthday.mp3 "$base/romantic-happy-birthday.mp3"
+          curl --fail --location --retry 3 --output assets/takkan-terganti.mp3 "$base/takkan-terganti.mp3"
+      - name: Commit assets
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets
+          git diff --cached --quiet || git commit -m "Add website assets"
+          git push
